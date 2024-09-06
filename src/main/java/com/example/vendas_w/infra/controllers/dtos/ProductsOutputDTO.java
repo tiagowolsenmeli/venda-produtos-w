@@ -7,5 +7,6 @@ public class ProductsOutputDTO {
         this.id = id;
     }
 
-    private final long id;
+    private long id;
+    private  String message;
 }
