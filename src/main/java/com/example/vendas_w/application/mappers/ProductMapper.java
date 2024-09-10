@@ -2,8 +2,7 @@ package com.example.vendas_w.application.mappers;
 
 import com.example.vendas_w.domain.entities.Product;
 import com.example.vendas_w.infra.controllers.dtos.ProductsInputDTO;
-import com.example.vendas_w.infra.controllers.dtos.ProductsOutputDTO;
-import org.springframework.stereotype.Component;
+import com.example.vendas_w.infra.controllers.dtos.ProductOutputDTO;
 
 
 public class ProductMapper {
@@ -13,8 +12,15 @@ public class ProductMapper {
                 productsInputDTO.getFiscalCode());
     }
 
-    public static ProductsOutputDTO fromDomain (Product product){
-        return new ProductsOutputDTO(product.getId());
+    public static ProductOutputDTO fromDomain (Product product){
+        final ProductOutputDTO productOutputDTO = new ProductOutputDTO();
+        productOutputDTO.setId(product.getId());
+        productOutputDTO.setName(product.getName());
+        productOutputDTO.setPrice(product.getPrice());
+        productOutputDTO.setDescription(product.getDescription());
+        productOutputDTO.setFiscalCode(product.getFiscalCode());
+
+        return productOutputDTO;
     }
 
 }
