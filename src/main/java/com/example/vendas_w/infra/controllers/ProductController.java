@@ -1,15 +1,16 @@
 package com.example.vendas_w.infra.controllers;
 
 import com.example.vendas_w.application.usecases.ProductSaveUseCase;
-import com.example.vendas_w.infra.controllers.dtos.ProductsInputDTO;
+import com.example.vendas_w.application.usecases.ProductSearchUseCase;
 import com.example.vendas_w.infra.controllers.dtos.ProductOutputDTO;
+import com.example.vendas_w.infra.controllers.dtos.ProductSearchInputDTO;
+import com.example.vendas_w.infra.controllers.dtos.ProductsInputDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/produtos")
@@ -19,6 +20,8 @@ public class ProductController {
 
 
     private final  ProductSaveUseCase productSaveUseCase;
+
+    private  final ProductSearchUseCase productSearchUseCase;
 
     @PostMapping
     public ResponseEntity<ProductOutputDTO> insertProduct(@RequestBody ProductsInputDTO productsInputDTO) {
@@ -33,6 +36,13 @@ public class ProductController {
             return ResponseEntity.internalServerError().build();
         }
 
+    }
+
+
+    @GetMapping
+    public ResponseEntity<List<ProductOutputDTO>> searchProduct(@RequestBody ProductSearchInputDTO productSearchInputDTO) {
+                return ResponseEntity.ok(productSearchUseCase.execute
+                        (productSearchInputDTO));
     }
 
 }

@@ -3,8 +3,8 @@ package com.example.vendas_w.application.usecases;
 import com.example.vendas_w.application.mappers.ProductMapper;
 import com.example.vendas_w.application.services.ProductService;
 import com.example.vendas_w.domain.entities.Product;
-import com.example.vendas_w.infra.controllers.dtos.ProductsInputDTO;
 import com.example.vendas_w.infra.controllers.dtos.ProductOutputDTO;
+import com.example.vendas_w.infra.controllers.dtos.ProductsInputDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +21,7 @@ public class ProductSaveUseCase {
 
         Product productSaved = productService.saveProduct(product);
 
-        return ProductMapper.fromDomain(product);
+        return ProductMapper.toDTO(product);
 
     }
 

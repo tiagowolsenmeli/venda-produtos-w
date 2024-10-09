@@ -1,8 +1,11 @@
 package com.example.vendas_w.application.mappers;
 
 import com.example.vendas_w.domain.entities.Product;
-import com.example.vendas_w.infra.controllers.dtos.ProductsInputDTO;
 import com.example.vendas_w.infra.controllers.dtos.ProductOutputDTO;
+import com.example.vendas_w.infra.controllers.dtos.ProductsInputDTO;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class ProductMapper {
@@ -12,7 +15,7 @@ public class ProductMapper {
                 productsInputDTO.getFiscalCode());
     }
 
-    public static ProductOutputDTO fromDomain (Product product){
+    public static ProductOutputDTO toDTO(Product product){
         final ProductOutputDTO productOutputDTO = new ProductOutputDTO();
         productOutputDTO.setId(product.getId());
         productOutputDTO.setName(product.getName());
@@ -21,6 +24,12 @@ public class ProductMapper {
         productOutputDTO.setFiscalCode(product.getFiscalCode());
 
         return productOutputDTO;
+    }
+
+    public static List<ProductOutputDTO> toDTO(List<Product> productList){
+        return productList.stream()
+                .map( ProductMapper::toDTO
+                ).collect(Collectors.toList());
     }
 
 }
