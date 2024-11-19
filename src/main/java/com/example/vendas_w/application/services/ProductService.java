@@ -33,6 +33,10 @@ public class ProductService {
             //TODO FiscalCode só retornar um
         }
 
+        if (name != null && fiscalCode != null){
+            return productsRepository.findByNameAndFiscalCode(name, fiscalCode);
+        }
+
         return null;
     }
 

@@ -5,6 +5,12 @@ import com.example.vendas_w.application.usecases.ProductSearchUseCase;
 import com.example.vendas_w.infra.controllers.dtos.ProductOutputDTO;
 import com.example.vendas_w.infra.controllers.dtos.ProductSearchInputDTO;
 import com.example.vendas_w.infra.controllers.dtos.ProductsInputDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +22,7 @@ import java.util.List;
 @RequestMapping("/produtos")
 @AllArgsConstructor
 @Slf4j
+@Tag(name = "ProductController", description = "Endpoint para operaçÕes com produtos")
 public class ProductController {
 
 
@@ -40,7 +47,11 @@ public class ProductController {
 
 
     @GetMapping
-    public ResponseEntity<List<ProductOutputDTO>> searchProduct(@RequestBody ProductSearchInputDTO productSearchInputDTO) {
+    @Operation(summary = "Busca Produtos", description = "Busca produtos por fiscalCode e/ou name. Valores null dão findAll")
+    @ApiResponse(responseCode = "200", description = "Operação bem sucedida",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductOutputDTO.class)))
+    public ResponseEntity<List<ProductOutputDTO>> searchProduct(@Parameter(name = "ProductSearchInputDTO", description = "Dados a filtrar"
+    , schema = @Schema(implementation = ProductSearchInputDTO.class)) @RequestBody ProductSearchInputDTO productSearchInputDTO) {
                 return ResponseEntity.ok(productSearchUseCase.execute
                         (productSearchInputDTO));
     }

@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: vendas-w
+  datasource:
+    url: jdbc:mysql://localhost:3306/schema-vendas-w?useSSL=false&serverTimezone=UTC
+    username: vendas-w
+    password: vendas-w
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+distributionUrl: https\://services.gradle.org/distributions/gradle-9.0-all.zip

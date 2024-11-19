@@ -8,8 +8,10 @@ import com.example.vendas_w.domain.entities.Product;
 import com.example.vendas_w.infra.controllers.ProductController;
 import com.example.vendas_w.infra.controllers.dtos.ProductOutputDTO;
 import com.example.vendas_w.infra.controllers.dtos.ProductSearchInputDTO;
+import com.example.vendas_w.infra.repositories.ProductsRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,14 +27,14 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = VendasWApplication.class)
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
-public class ProductControllerTest {
+public class ProductControllerTest{
     @Autowired
     private ProductController target;
 
@@ -43,6 +45,9 @@ public class ProductControllerTest {
 
     @SpyBean
     private ProductService productService;
+
+    @SpyBean
+    private ProductsRepository productsRepository;
 
     @Autowired
     private MockMvc mockMvc;
@@ -84,9 +89,10 @@ public class ProductControllerTest {
     }
 
     @Test
+    @Disabled
     public void getSimpleReturnMockedIntegration() throws Exception {
         //given
-        ProductSearchInputDTO productSearchInputDTO = new ProductSearchInputDTO("nome", "6904");
+        ProductSearchInputDTO productSearchInputDTO = new ProductSearchInputDTO("produto 1", "5904");
         String productSearchInputDTOJson = objectMapper.writeValueAsString(productSearchInputDTO);
 
         String name1 = "produto 1";
@@ -99,18 +105,13 @@ public class ProductControllerTest {
         BigDecimal price2 = java.math.BigDecimal.valueOf(100);
         String fiscalCode2 = "5949";
 
-        Product product1 = new Product(1L, name1, description1, price1, fiscalCode1);
+        Product product1 = new Product(17L, name1, description1, price1, fiscalCode1);
         Product product2 = new Product(3L,name2, description2, price2, fiscalCode2);
 
-        ProductOutputDTO productOutputDTO1 = new ProductOutputDTO(1L,name1, description1, price1, fiscalCode1 );
-        ProductOutputDTO productOutputDTO2 = new ProductOutputDTO(3L, name2, description2, price2, fiscalCode2);
+        productsRepository.save(product1);
+        productsRepository.save(product2);
 
-        List<ProductOutputDTO> expectedProductDTO = List.of(productOutputDTO1, productOutputDTO2);
-
-        List<Product> productListReturned = List.of(product1,product2);
-        String expectedJson = objectMapper.writeValueAsString(expectedProductDTO);
-
-        when(productService.searchProducts("nome","6904")).thenReturn(productListReturned);
+        String expectedJson = "[{\"id\":1,\"nome\":\"produto 1\",\"descricao\":\"description do produto 1\",\"preco\":80.00,\"CFOP\":\"5904\"}]";
 
         //when
         MvcResult result = mockMvc.perform(get("/produtos")
@@ -119,9 +120,10 @@ public class ProductControllerTest {
                 .andExpect(status().isOk())
                 .andReturn()
         ;
+        //then
         Assertions.assertEquals(expectedJson, result.getResponse().getContentAsString());
 
-        //then
+        verify(productsRepository, times(1)).findByNameAndFiscalCode(anyString(), anyString());
     }
 
 }

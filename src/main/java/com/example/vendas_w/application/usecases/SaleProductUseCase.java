@@ -4,7 +4,7 @@ import com.example.vendas_w.application.mappers.ProductMapper;
 import com.example.vendas_w.application.services.ProductService;
 import com.example.vendas_w.domain.entities.Product;
 import com.example.vendas_w.infra.controllers.dtos.ProductOutputDTO;
-import com.example.vendas_w.infra.controllers.dtos.ProductSearchInputDTO;
+import com.example.vendas_w.infra.controllers.dtos.ProductsInputDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +14,12 @@ import java.util.List;
 
 @AllArgsConstructor
 @Service
-public class ProductSearchUseCase {
+public class SaleProductUseCase {
 
-    private  final ProductService productService;
-    public List<ProductOutputDTO> execute (final ProductSearchInputDTO productSearchInputDTO){
-        List<Product> productList = productService.searchProducts(productSearchInputDTO.getName(),
-                        productSearchInputDTO.getFiscalCode())
+    private final ProductService productService;
+    public List<ProductOutputDTO> execute (final ProductsInputDTO productsInputDTO){
+        List<Product> productList = productService.searchProducts(productsInputDTO.getName(),
+                        productsInputDTO.getFiscalCode())
                 .stream()
                 .sorted(Comparator.comparingLong(Product::getId))
                 .toList();
