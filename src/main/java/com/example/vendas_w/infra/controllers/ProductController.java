@@ -14,7 +14,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -32,7 +35,6 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<ProductOutputDTO> insertProduct(@RequestBody ProductsInputDTO productsInputDTO) {
-
         try {
             return ResponseEntity.ok(productSaveUseCase.execute(productsInputDTO));
         }catch (IllegalArgumentException illegalArgumentException){
@@ -46,7 +48,7 @@ public class ProductController {
     }
 
 
-    @GetMapping
+    @PostMapping("/search")
     @Operation(summary = "Busca Produtos", description = "Busca produtos por fiscalCode e/ou name. Valores null dão findAll")
     @ApiResponse(responseCode = "200", description = "Operação bem sucedida",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductOutputDTO.class)))

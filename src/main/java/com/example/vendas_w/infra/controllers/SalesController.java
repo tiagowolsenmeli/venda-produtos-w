@@ -30,8 +30,6 @@ public class SalesController {
 
             List<ProductOutputDTO> produtosRetornados = saleProductUseCase.execute(productsInputDTO);
             return ResponseEntity.ok(produtosRetornados);
-
-
         }catch (IllegalArgumentException illegalArgumentException){
             log.error(illegalArgumentException.getMessage());
             return ResponseEntity.badRequest().build();
