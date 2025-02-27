@@ -2,8 +2,6 @@ package infra.controller;
 
 import com.example.vendas_w.VendasWApplication;
 import com.example.vendas_w.application.services.ProductService;
-import com.example.vendas_w.application.usecases.ProductSaveUseCase;
-import com.example.vendas_w.application.usecases.ProductSearchUseCase;
 import com.example.vendas_w.domain.entities.Product;
 import com.example.vendas_w.infra.controllers.ProductController;
 import com.example.vendas_w.infra.controllers.dtos.ProductOutputDTO;
@@ -11,7 +9,6 @@ import com.example.vendas_w.infra.controllers.dtos.ProductSearchInputDTO;
 import com.example.vendas_w.infra.repositories.ProductsRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,11 +36,6 @@ public class ProductControllerTest{
     private ProductController target;
 
     @SpyBean
-    private ProductSearchUseCase productSearchUseCase;
-    @SpyBean
-    private ProductSaveUseCase productSaveUseCase;
-
-    @SpyBean
     private ProductService productService;
 
     @SpyBean
@@ -58,7 +50,8 @@ public class ProductControllerTest{
     @Test
     public void getSimpleReturnMocked(){
         //given
-        ProductSearchInputDTO productSearchInputDTO = new ProductSearchInputDTO("nome", "6904");
+        String inputName = "nome";
+        String inputFiscalCode = "6904";
         String name1 = "produto 1";
         String description1 = "description do produto 1";
         BigDecimal price1 = java.math.BigDecimal.valueOf(80);
@@ -82,25 +75,26 @@ public class ProductControllerTest{
         when(productService.searchProducts("nome","6904")).thenReturn(productListReturned);
 
         //when
-        ResponseEntity<List<ProductOutputDTO>> result =  target.searchProduct(productSearchInputDTO);
+        ResponseEntity<List<ProductOutputDTO>> result =  target.searchProduct(inputName,inputFiscalCode );
 
         //then
         Assertions.assertEquals(expected, result);
     }
 
     @Test
-    @Disabled
     public void getSimpleReturnMockedIntegration() throws Exception {
         //given
-        ProductSearchInputDTO productSearchInputDTO = new ProductSearchInputDTO("produto 1", "5904");
+        String nameInput = "produto 1 novo";
+        String fiscalCodeInput = "5904";
+        ProductSearchInputDTO productSearchInputDTO = new ProductSearchInputDTO(nameInput, fiscalCodeInput);
         String productSearchInputDTOJson = objectMapper.writeValueAsString(productSearchInputDTO);
 
-        String name1 = "produto 1";
+        String name1 = "produto 1 novo";
         String description1 = "description do produto 1";
         BigDecimal price1 = java.math.BigDecimal.valueOf(80);
         String fiscalCode1 = "5904";
 
-        String name2 = "produto 2";
+        String name2 = "produto 2 novo";
         String description2 = "description do produto 2";
         BigDecimal price2 = java.math.BigDecimal.valueOf(100);
         String fiscalCode2 = "5949";
@@ -111,10 +105,10 @@ public class ProductControllerTest{
         productsRepository.save(product1);
         productsRepository.save(product2);
 
-        String expectedJson = "[{\"id\":1,\"nome\":\"produto 1\",\"descricao\":\"description do produto 1\",\"preco\":80.00,\"CFOP\":\"5904\"}]";
+        String expectedJson = "[{\"id\":1,\"nome\":\"produto 1 novo\",\"descricao\":\"description do produto 1\",\"preco\":80.00,\"CFOP\":\"5904\"}]";
 
         //when
-        MvcResult result = mockMvc.perform(get("/produtos")
+        MvcResult result = mockMvc.perform(get("/produtos?name="+ nameInput + "&fiscalCode=" + fiscalCodeInput)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(productSearchInputDTOJson))
                 .andExpect(status().isOk())
