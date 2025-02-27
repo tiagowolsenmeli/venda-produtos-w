@@ -2,8 +2,6 @@ package infra.controller;
 
 import com.example.vendas_w.VendasWApplication;
 import com.example.vendas_w.application.services.ProductService;
-import com.example.vendas_w.application.usecases.ProductSaveUseCase;
-import com.example.vendas_w.application.usecases.ProductSearchUseCase;
 import com.example.vendas_w.domain.entities.Product;
 import com.example.vendas_w.infra.controllers.ProductController;
 import com.example.vendas_w.infra.controllers.dtos.ProductOutputDTO;
@@ -38,11 +36,6 @@ public class ProductControllerTest{
     private ProductController target;
 
     @SpyBean
-    private ProductSearchUseCase productSearchUseCase;
-    @SpyBean
-    private ProductSaveUseCase productSaveUseCase;
-
-    @SpyBean
     private ProductService productService;
 
     @SpyBean
@@ -59,7 +52,6 @@ public class ProductControllerTest{
         //given
         String inputName = "nome";
         String inputFiscalCode = "6904";
-        ProductSearchInputDTO productSearchInputDTO = new ProductSearchInputDTO("nome", "6904");
         String name1 = "produto 1";
         String description1 = "description do produto 1";
         BigDecimal price1 = java.math.BigDecimal.valueOf(80);
